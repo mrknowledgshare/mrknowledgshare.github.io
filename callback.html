@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TikTok Auth Callback</title>
+<style>
+  body { font-family: sans-serif; max-width: 600px; margin: 60px auto; padding: 0 20px; color: #333; text-align: center; }
+  .code-box { background: #f4f4f4; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; word-break: break-all; font-family: monospace; font-size: 14px; }
+  .label { font-weight: bold; color: #555; margin-bottom: 8px; }
+  button { background: #000; color: #fff; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  button:hover { background: #333; }
+</style>
+</head>
+<body>
+<h2>TikTok Authorization</h2>
+<p id="status">Reading authorization code...</p>
+<div id="code-section" style="display:none">
+  <p class="label">Copy this code and send it to Claude:</p>
+  <div class="code-box" id="code-display"></div>
+  <button onclick="navigator.clipboard.writeText(document.getElementById('code-display').innerText)">Copy Code</button>
+</div>
+<div id="error-section" style="display:none">
+  <p style="color:red">Authorization failed or was cancelled.</p>
+  <div class="code-box" id="error-display"></div>
+</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const error = params.get('error');
+  if (code) {
+    document.getElementById('status').textContent = 'Authorization successful!';
+    document.getElementById('code-display').textContent = code;
+    document.getElementById('code-section').style.display = 'block';
+  } else if (error) {
+    document.getElementById('status').textContent = 'Error:';
+    document.getElementById('error-display').textContent = error + ': ' + (params.get('error_description') || '');
+    document.getElementById('error-section').style.display = 'block';
+  } else {
+    document.getElementById('status').textContent = 'No code found in URL.';
+  }
+</script>
+</body>
+</html>
